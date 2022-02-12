@@ -35,7 +35,7 @@ function Login() {
     setError("");
     try {
       await logIn(email, password);
-      nav("/signup");
+      nav("/");
     } catch (error) {
       setError(error.message);
     }

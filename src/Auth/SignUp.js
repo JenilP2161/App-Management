@@ -6,15 +6,12 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useUserAuth } from './UserAuthContext'
-import { addDoc, collection, query, where, getDocs} from 'firebase/firestore'
-import {db} from '../Firebase'
 
 function SignUp() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [item, setItem] = useState("");
   const { signUp, user } = useUserAuth();
   const navigate = useNavigate();
 
@@ -37,14 +34,11 @@ function SignUp() {
     height: "58vh",
   };
 
-  const ref = collection(db, "user");
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
       await signUp(email, password)
-     addDoc(ref, {email: email})
       navigate('/login')
     } catch (error) {
       setError(error.message);
