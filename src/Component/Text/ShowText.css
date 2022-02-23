@@ -1,0 +1,28 @@
+body {
+  background: #be93c5;
+  background: -webkit-linear-gradient(to right, #7bc6cc, #be93c5);
+  background: linear-gradient(to right, #7bc6cc, #be93c5);
+}
+
+.grid {
+  margin-top: 10px;
+}
+
+.paper {
+  width: 94%;
+  margin-left: 50px;
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+.title {
+  color: rgb(142, 33, 156);
+  letter-spacing: 5px;
+  font-weight: 600;
+}
+
+.text {
+  letter-spacing: 2px;
+  color:#472006;
+  font-weight: 400;
+}

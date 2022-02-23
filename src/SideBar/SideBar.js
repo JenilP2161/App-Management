@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { SideBarData } from "./SideBarData";
+import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom'
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -17,21 +16,39 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-// import { useUserAuth } from '../Auth/UserAuthContext'
+import { useUserAuth } from '../Auth/UserAuthContext'
 import Exit from '@mui/icons-material/ExitToApp'
 import Button from '@mui/material/Button'
+import { get, child, ref, getDatabase } from 'firebase/database'
 const drawerWidth = 230;
 
 function SideBar(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    //const { logOut } = useUserAuth();
+    const { logOut } = useUserAuth();
+    const [list, setList] = useState()
+    const [selectedIndex, setSelectedIndex] = useState("")
+
+    const dbRef = ref(getDatabase());
+    useEffect(() => {
+        const getData = () => {
+            get(child(dbRef, '/Admin/Apps')).then((snapshot) => {
+                if (snapshot.exists()) {
+                    setList(snapshot.val())
+                } else {
+                    console.log("No data available");
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+        }
+        getData()
+    }, [])
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
 
-    const [selectedIndex, setSelectedIndex] = useState("")
     const handleClick = index => {
         if (selectedIndex === index) {
             setSelectedIndex("")
@@ -40,13 +57,13 @@ function SideBar(props) {
         }
     }
 
-    // const handleClick = async () => {
-    //     try {
-    //         await logOut();
-    //     } catch (error) {
-    //         alert(error)
-    //     }
-    // }
+    const handleLogout = async () => {
+        try {
+            await logOut();
+        } catch (error) {
+            alert(error)
+        }
+    }
 
     const drawer = (
         <div>
@@ -62,42 +79,55 @@ function SideBar(props) {
                 <ListItem button>
                     <ListItemText primary='Apps' />
                 </ListItem>
-                {SideBarData.map((text, index) => {
-                    return (
-                        <div key={index}>
-                            <List component="div" disablePadding>
-                                {text.child.map((item, index) => (
-                                    <div key={index}>
-                                        <ListItemButton onClick={() => { handleClick(index) }} sx={{ pl: 4 }}>
-                                            <ListItemText primary={item.title} />
-                                            {index === selectedIndex ? <ExpandLess /> : <ExpandMore />}
-                                        </ListItemButton>
-                                        <Collapse in={index === selectedIndex} timeout='auto' unmountOnExit>
-                                            <List component="div" disablePadding>
-                                                {item.child.map((list, index) => (
-                                                    <ListItemButton key={index} sx={{ pl: 6 }}>
-                                                        <ListItemText primary={list.title} />
-                                                    </ListItemButton>
-                                                ))
-                                                }
-                                                <Divider sx={{ borderColor: 'rgb(173 150 158)' }} />
-                                            </List>
-                                        </Collapse>
-                                    </div>
-                                )
-                                )}
-                            </List>
-                        </div>
-                    );
-                })}
-                <Divider sx={{ borderColor: 'rgb(173 150 158)' }} />
-                <ListItem button>
-                    <ListItemText primary='Notification' />
-                </ListItem>
-                <Divider sx={{ borderColor: 'rgb(173 150 158)' }} />
             </List>
-        </div>
+            {list !== undefined ? (
+                <div>
+                    {Object.values(list).map((text, index) => {
+                        return (
+                            <div key={index}>
+                                <List component="div" disablePadding>
+                                    <ListItemButton onClick={() => { handleClick(index) }} sx={{ pl: 4 }}>
+                                        <ListItemText primary={text.name} />
+                                        {index === selectedIndex ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItemButton>
+                                    <Collapse in={index === selectedIndex} timeout='auto' unmountOnExit>
+                                        <List component="div" disablePadding>
+                                            <Link style={{ textDecoration: 'none', color: 'black' }} to={`/apphome/${text.name}`}>
+                                                <ListItemButton sx={{ pl: 6 }}>
+                                                    <ListItemText primary="Home" />
+                                                </ListItemButton>
+                                            </Link>
+                                            <Link style={{ textDecoration: 'none', color: 'black' }} to={`/config/${text.name}`}>
+                                                <ListItemButton sx={{ pl: 6 }}>
+                                                    <ListItemText primary="Config" />
+                                                </ListItemButton>
+                                            </Link>
+                                            <Link style={{ textDecoration: 'none', color: 'black' }} to={`/admob/${text.name}`}>
+                                                <ListItemButton sx={{ pl: 6 }}>
+                                                    <ListItemText primary="Admob" />
+                                                </ListItemButton>
+                                            </Link>
+                                            <Divider sx={{ borderColor: 'rgb(173 150 158)' }} />
+                                        </List>
+                                    </Collapse>
+                                </List>
+                            </div>
+                        );
+                    })}
+                </div >
+            ) : (
+                <div>
+
+                </div>
+            )}
+            <Divider sx={{ borderColor: 'rgb(173 150 158)' }} />
+            <ListItem button>
+                <ListItemText primary='Notification' />
+            </ListItem>
+            <Divider sx={{ borderColor: 'rgb(173 150 158)' }} />
+        </div >
     );
+
 
     const container =
         window !== undefined ? () => window().document.body : undefined;
@@ -127,7 +157,7 @@ function SideBar(props) {
                         <Typography variant="h6" sx={{ flexGrow: 1 }} component="div">
                             Admin Panel
                         </Typography>
-                        {/* <Button style={{ color: 'white' }} onClick={handleClick}><Exit /></Button> */}
+                        <Button style={{ color: 'white' }} onClick={handleLogout}><Exit /></Button>
                     </Toolbar>
                 </AppBar>
                 <Box
@@ -147,7 +177,7 @@ function SideBar(props) {
                             display: { xs: "block", sm: "none" },
                             "& .MuiDrawer-paper": {
                                 boxSizing: "border-box",
-                                width: drawerWidth,
+                                width: drawerWidth
                             },
                         }}
                     >

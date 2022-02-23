@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { UserAuthContextProvider } from './Auth/UserAuthContext'
 
 ReactDOM.render(
-    <App />,
+  <UserAuthContextProvider><App /></UserAuthContextProvider>,
   document.getElementById('root')
 );
 
