@@ -35,10 +35,10 @@ function Login() {
     setError("");
     try {
       await logIn(email, password);
-      nav("/");
+      nav("/signup");
     } catch (error) {
       setError(error.message);
-    }
+    } 
   };
 
   return (
