@@ -6,8 +6,17 @@ import Login from './Auth/Login';
 import { useUserAuth } from './Auth/UserAuthContext'
 import ProtectedRoute from './Auth/ProtectedRoute'
 import { Grid } from "@mui/material";
-import Config from "./Components/Configuration/Config";
-import ShowImages from "./Components/Images/ShowImages";
+import SideBar from "./SideBar/SideBar"
+import Home from './Home'
+import Admob from './Component/Admob'
+import AppHome from './Component/AppHome'
+import AddImage from './Component/Image/AddImage'
+import AddVideo from './Component/Video/AddVideo'
+import AddText from './Component/Text/AddText'
+import PaginationImage from './Pagination/PaginationImage';
+import PaginationVideo from './Pagination/PaginationVideo';
+import PaginationText from './Pagination/PaginationText';
+
 // import Config from "./Components/Configuration/Config";
 // import ShowImages from "./Components/Images/ShowImages";
 // import Mv from './Mv'
@@ -15,58 +24,52 @@ import ShowImages from "./Components/Images/ShowImages";
 
 
 function App() {
-
-  const { user } = useUserAuth();
-  const [isUser, setIsUser] = useState(false);
-  console.log(user)
+  const { user } = useUserAuth()
+  const [isUser, setIsUser] = useState(false)
 
   useEffect(() => {
     const find = () => {
       if (user) {
         return setIsUser(true)
       }
-      else{
+      else {
         return setIsUser(false)
       }
     }
     find()
-
-  }, [user]) 
-
+  }, [user])
 
 
   return (
     <>
-    <Router>
-      <UserAuthContextProvider>
-        <Grid container spacing={6}>
-          <Grid item xs={2}>
-            {/* {isUser === true ? <SideBar /> : null} */}
+      <Router>
+        <UserAuthContextProvider>
+          <Grid container spacing={6}>
+            <Grid item xs={2}>
+              {isUser === true ? <SideBar /> : null}
+            </Grid>
+            <Grid item xs={10}>
+              <Routes>
+                <Route>
+                  <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                  <Route path="/apphome/:id" element={<ProtectedRoute><AppHome /></ProtectedRoute>} />
+                  <Route path="/addimage/:id" element={<ProtectedRoute><AddImage /></ProtectedRoute>} />
+                  <Route path="/imagelist/:id" element={<ProtectedRoute><PaginationImage /></ProtectedRoute>} />
+                  <Route path="/addvideo/:id" element={<ProtectedRoute><AddVideo /></ProtectedRoute>} />
+                  <Route path="/videolist/:id" element={<ProtectedRoute><PaginationVideo /></ProtectedRoute>} />
+                  <Route path="/addtext/:id" element={<ProtectedRoute><AddText /></ProtectedRoute>} />
+                  <Route path="/textlist/:id" element={<ProtectedRoute><PaginationText /></ProtectedRoute>} />
+                  <Route path="/admob/:id" element={<ProtectedRoute><Admob /></ProtectedRoute>} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<SignUp />} />
+                </Route>
+              </Routes>
+            </Grid>
           </Grid>
-          <Grid item xs={10}>
-            <Routes>
-              <Route>
-                {/* <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-                <Route path="/addimage" element={<ProtectedRoute><AddImage /></ProtectedRoute>} />
-                <Route path="/addvideo" element={<ProtectedRoute><AddVideo /></ProtectedRoute>} />
-                <Route path="/addtext" element={<ProtectedRoute><AddText /></ProtectedRoute>} />
-                <Route path="/showimages" element={<ProtectedRoute><PaginationImage /></ProtectedRoute>} />
-                <Route path="/showvideos" element={<ProtectedRoute><PaginationVideo /></ProtectedRoute>} />
-                <Route path="/showtexts" element={<ProtectedRoute><PaginationText /></ProtectedRoute>} /> */}
-                <Route path="/" element={<Config />} />
-                <Route path="/showimages" element={<ShowImages />} />
-                <Route path="/config" element={<Config />} />
-                {/* <Route path="/m" element={<Mv />} /> */}
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<SignUp />} />
-              </Route>
-            </Routes>
-          </Grid>
-        </Grid>
-      </UserAuthContextProvider>
-    </Router>
+        </UserAuthContextProvider>
+      </Router>
     </>
-  )
+  );
 }
 
 export default App;
