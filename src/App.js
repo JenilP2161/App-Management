@@ -1,24 +1,29 @@
-import React, { useState, useEffect } from 'react'
-import SideBar from "./SideBar/SideBar";
+import React, { useState, useEffect } from "react";
+import { UserAuthContextProvider } from './Auth/UserAuthContext';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Grid from '@mui/material/Grid'
-import Login from './Auth/Login'
-import SignUp from './Auth/SignUp'
+import SignUp from './Auth/SignUp';
+import Login from './Auth/Login';
+import { useUserAuth } from './Auth/UserAuthContext'
+import ProtectedRoute from './Auth/ProtectedRoute'
+import { Grid } from "@mui/material";
+import SideBar from "./SideBar/SideBar"
 import Home from './Home'
 import Admob from './Component/Admob'
 import AppHome from './Component/AppHome'
 import AddImage from './Component/Image/AddImage'
 import AddVideo from './Component/Video/AddVideo'
 import AddText from './Component/Text/AddText'
-import { UserAuthContextProvider } from './Auth/UserAuthContext';
-import ProtectedRoute from './Auth/ProtectedRoute'
-import { useUserAuth } from './Auth/UserAuthContext'
 import PaginationImage from './Pagination/PaginationImage';
 import PaginationVideo from './Pagination/PaginationVideo';
 import PaginationText from './Pagination/PaginationText';
 
-function App() {
+// import Config from "./Components/Configuration/Config";
+// import ShowImages from "./Components/Images/ShowImages";
+// import Mv from './Mv'
 
+
+
+function App() {
   const { user } = useUserAuth()
   const [isUser, setIsUser] = useState(false)
 
@@ -68,3 +73,4 @@ function App() {
 }
 
 export default App;
+
